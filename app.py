@@ -36,8 +36,10 @@ def signup():
             return make_response(jsonify(error='Invalid email address'), 412)
 
         else:
-            user = User.create_and_store(request.form['email'],
-                                         request.form['password'])
+            user = User.create_and_store(
+                request.form['email'],
+                request.form['password']
+            )
             return jsonify(email=user.email)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -62,7 +64,7 @@ def forgot_password():
 @app.route('/password-reset/<token>', methods=['GET', 'POST'])
 def password_reset(token):
     if request.method == 'GET':
-        return render_template('password-reset.html')
+        return render_template('password-reset.html', token=token)
     else:
         return 'ok'
 
