@@ -23,7 +23,7 @@ class User(Document):
         @param email: User's email address
         @param password: User's password
         """
-        u = cls(email=email, passwd=bcrypt.hashpw(password.encode('utf-8'),
+        u = cls(email=email, password=bcrypt.hashpw(password.encode('utf-8'),
                                                   bcrypt.gensalt()))
         u.confirmed = False if Config.SIGNUP_REQUIRES_CONFIRMATION else True
         u.save()

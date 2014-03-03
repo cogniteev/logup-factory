@@ -1,7 +1,8 @@
 """
 Here stands the authentication mechanism
 """
-from datetime import datetime, time
+from datetime import datetime
+import time
 import bcrypt
 from models.models import User, Token
 from config import Config
@@ -15,10 +16,12 @@ def generate_token(email, password):
     @return: an authentication token upon correct login or None
     """
     user = User.objects(email=email).first()
-    if str(bcrypt.hashpw(password.encode('utf-8'), user.passwd.encode('utf-8')),
-           'utf-8') == user.passwd:
-
-        return check_user_token(user)
+    if user:
+        if str(bcrypt.hashpw(password.encode('utf-8'),
+                             user.password.encode('utf-8'))) == user.password:
+            return check_user_token(user)
+        else:
+            return None
     else:
         return None
 
@@ -38,6 +41,7 @@ def refresh_token(token_id, password):
     else:
         return None
 
+
 def check_user_token(user):
     """ Retrieve, update or create a user's token
 
@@ -51,14 +55,14 @@ def check_user_token(user):
 
     if token:
 
-        if token.validUntil < valid_limit:
-            return token.id
+        if token.valid_until < valid_limit:
+            return token
 
         else:
             token.valid_until = valid_limit
             token.update()
-            return token.id
+            return token
     else:
         token = Token(user=user, valid_until=valid_limit)
         token.save()
-        return token.id
+        return token
