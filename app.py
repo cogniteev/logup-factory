@@ -6,7 +6,12 @@ from flask import Flask
 from flask.ext.mongoengine import MongoEngine
 
 from flask import request
+from flask import session
+from flask import jsonify
 from flask import render_template
+
+from models.models import User
+from authentication.authentication import generate_token
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 app.config.from_pyfile('flask-conf.cfg')
@@ -22,14 +27,22 @@ def signup():
     if request.method == 'GET':
         return render_template('signup.html')
     else:
-        return 'ok'
+        user = User.create_and_store(request.form['email'],
+                                     request.form['password'])
+        return jsonify(email=user.email)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
-        return 'ok'
+        token = generate_token(request.form['email'], request.form['password'])
+        if token:
+            session['token'] = token.id
+            return jsonify(email=token.user.email)
+        else:
+            return jsonify(error='Invalid credentials',
+                           fields=['email', 'password'])
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():

@@ -27,6 +27,7 @@ class User(Document):
                                                   bcrypt.gensalt()))
         u.confirmed = False if Config.SIGNUP_REQUIRES_CONFIRMATION else True
         u.save()
+        return u
 
 
 class Token(Document):
