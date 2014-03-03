@@ -12,9 +12,9 @@ class User(Document):
     """
     The application user collection
     """
-    email = EmailField(Required=True, unique=True)
-    password = StringField(Required=True)
-    confirmed = BooleanField(Required=True)
+    email = EmailField(required=True, unique=True)
+    password = StringField(required=True)
+    confirmed = BooleanField(required=True)
 
     @classmethod
     def create_and_store(cls, email, password):
