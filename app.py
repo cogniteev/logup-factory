@@ -1,8 +1,17 @@
+"""
+Main entry point of the logup-factory
+"""
+
 from flask import Flask
+from flask.ext.mongoengine import MongoEngine
+
 from flask import request
 from flask import render_template
 
 app = Flask(__name__)
+app.config.from_pyfile("app-cong.cfg")
+
+db = MongoEngine(app)
 
 @app.route('/')
 def index():
@@ -23,4 +32,4 @@ def login():
         return 'ok'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
