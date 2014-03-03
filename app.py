@@ -8,10 +8,10 @@ from flask.ext.mongoengine import MongoEngine
 from flask import request
 from flask import render_template
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 app.config.from_pyfile('flask-conf.cfg')
 
-db = MongoEngine(app)
+# db = MongoEngine(app)
 
 @app.route('/')
 def index():
