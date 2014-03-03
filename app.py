@@ -31,5 +31,19 @@ def login():
     else:
         return 'ok'
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'GET':
+        return render_template('forgot-password.html')
+    else:
+        return 'ok'
+
+@app.route('/password-reset/<string:token>', methods=['GET', 'POST'])
+def password_reset(token):
+    if request.method == 'GET':
+        return render_template('password-reset.html')
+    else:
+        return 'ok'
+
 if __name__ == '__main__':
     app.run()
