@@ -38,7 +38,7 @@ def forgot_password():
     else:
         return 'ok'
 
-@app.route('/password-reset/<string:token>', methods=['GET', 'POST'])
+@app.route('/password-reset/<token>', methods=['GET', 'POST'])
 def password_reset(token):
     if request.method == 'GET':
         return render_template('password-reset.html')
