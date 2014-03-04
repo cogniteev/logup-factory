@@ -35,4 +35,3 @@ class Token(Document):
     """
     user = ReferenceField(User, required=True, unique=True,
                           reverse_delete_rule=CASCADE)
-    valid_until = DateTimeField(required=True)

@@ -2,7 +2,7 @@
 Main entry point of the logup-factory
 """
 
-from flask import Flask
+from flask import Flask, url_for
 from flask.ext.mongoengine import MongoEngine
 
 from flask import request
@@ -11,9 +11,10 @@ from flask import jsonify
 from flask import make_response
 from flask import render_template
 
-from models.models import User
-from authentication.authentication import generate_token
+from models.models import User, Token
+from authentication.authentication import generate_token, requires_token
 from config import Config
+from werkzeug.utils import redirect
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 app.config.from_pyfile('flask-conf.cfg')
@@ -67,6 +68,13 @@ def password_reset(token):
         return render_template('password-reset.html', token=token)
     else:
         return 'ok'
+
+@app.route('/logout', methods=['GET'])
+@requires_token
+def logout():
+    Token.objects(id=session['token']).delete
+    session.pop('token', None)
+    return make_response(jsonify(success=True), 200)
 
 if __name__ == '__main__':
     app.run()

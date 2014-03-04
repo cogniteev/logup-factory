@@ -2,10 +2,13 @@
 Here stands the authentication mechanism
 """
 from datetime import datetime
+from functools import wraps
 import time
 import bcrypt
+from flask import session
 from models.models import User, Token
 from config import Config
+from werkzeug.exceptions import abort
 
 
 def generate_token(email, password):
@@ -49,20 +52,28 @@ def check_user_token(user):
     @return: a valid token associated with the user
     """
     token = Token.objects(user=user).first()
-    valid_limit = datetime.utcfromtimestamp(
+    extended = datetime.utcfromtimestamp(
         time.time() + Config.TOKEN_VALIDITY
     )
+    now = datetime.utcfromtimestamp(time.time())
 
     if token:
-
-        if token.valid_until < valid_limit:
-            return token
-
-        else:
-            token.valid_until = valid_limit
-            token.update()
-            return token
+        return token
     else:
-        token = Token(user=user, valid_until=valid_limit)
+        token = Token(user=user)
         token.save()
         return token
+
+def requires_token(f):
+
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        if 'token' in session:
+            t = Token.objects(id=session['token'])
+            return f(*args, **kwargs) if t.count > 0 else abort(401)
+        else:
+            return abort(401)
+
+    return decorated
