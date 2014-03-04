@@ -12,7 +12,7 @@ from flask import render_template
 
 from models.models import User, Token
 from authentication.authentication import generate_token, requires_token, \
-    is_valid_token
+    redirect_app
 from config import Config
 from werkzeug.utils import redirect
 
@@ -55,12 +55,10 @@ def signup():
             return jsonify(email=user.email)
 
 @app.route('/login', methods=['GET', 'POST'])
+@redirect_app
 def login():
     if request.method == 'GET':
-        if 'token' in session and is_valid_token(session['token']):
-            return redirect('/app')
-        else:
-            return render_template('login.html')
+        return render_template('login.html')
     else:
         token = generate_token(request.form['email'], request.form['password'])
         if token:

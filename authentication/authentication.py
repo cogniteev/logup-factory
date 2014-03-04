@@ -4,9 +4,10 @@ Here stands the authentication mechanism
 from functools import wraps
 
 import bcrypt
-from flask import session
+from flask import session, request
 from models.models import User, Token
 from werkzeug.exceptions import abort
+from werkzeug.utils import redirect
 
 
 def generate_token(email, password):
@@ -45,6 +46,18 @@ def check_user_token(user):
 
 def is_valid_token(token_id):
     return Token.objects(id=token_id).count() > 0
+
+def redirect_app(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        if request.method == 'GET' and \
+                        'token' in session and is_valid_token(session['token']):
+            return redirect('/app')
+        else:
+            return f(*args, **kwargs)
+
+    return decorated
 
 def requires_token(f):
 
