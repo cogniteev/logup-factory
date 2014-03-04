@@ -34,12 +34,10 @@ def product_home():
 
 
 @app.route('/signup', methods=['GET', 'POST'])
+@redirect_app
 def signup():
     if request.method == 'GET':
-        if 'token' in session and is_valid_token(session['token']):
-            return redirect('/app')
-        else:
-            return render_template('signup.html')
+        return render_template('signup.html')
     else:
         if User.objects(email=request.form['email']).count() > 0:
             return jsonify(error='Already registered email')
@@ -68,22 +66,18 @@ def login():
             return jsonify(error='Invalid credentials')
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
+@redirect_app
 def forgot_password():
     if request.method == 'GET':
-        if 'token' in session and is_valid_token(session['token']):
-            return redirect('/app')
-        else:
-            return render_template('forgot-password.html')
+        return render_template('forgot-password.html')
     else:
         return 'ok'
 
 @app.route('/password-reset/<token>', methods=['GET', 'POST'])
+@redirect_app
 def password_reset(token):
     if request.method == 'GET':
-        if 'token' in session and is_valid_token(session['token']):
-            return redirect('/app')
-        else:
-            return render_template('password-reset.html', token=token)
+        return render_template('password-reset.html', token=token)
     else:
         return 'ok'
 
