@@ -26,6 +26,7 @@ requirejs([
       'submit form.signup': 'signup',
       'submit form.forgot-password': 'forgotPassword',
       'submit form.password-reset': 'passwordReset',
+      'submit form.beta-access': 'requestBetaAccess',
       'click button.logout': 'logout'
     },
     extractFormData: function(form){
@@ -126,6 +127,25 @@ requirejs([
             // show error
           } else {
             document.location.href = '/';
+          }
+        },
+        error: function(res){
+          var message = 'Something went wrong';
+          console.log(message);
+        }
+      });
+    },
+    requestBetaAccess: function(e){
+      e.preventDefault();
+      $.ajax({
+        url: '/request-beta-access',
+        method: 'POST',
+        context: this,
+        success: function(res){
+          if (res.error) {
+            // show error
+          } else {
+            // notify user something happened
           }
         },
         error: function(res){

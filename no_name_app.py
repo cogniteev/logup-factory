@@ -96,6 +96,11 @@ def logout():
     return jsonify(success=True)
 
 
+@app.route('/request-beta-access', methods=['POST'])
+def request_beta_access():
+    # email, promo_code
+    return 'ok'
+
 if __name__ == '__main__':
     configure_app('confs/dev.cfg')
     app.run()
