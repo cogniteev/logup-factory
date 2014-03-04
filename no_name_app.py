@@ -2,7 +2,7 @@
 Main entry point of the logup-factory
 """
 
-from flask import Flask, url_for
+from flask import Flask
 from flask.ext.mongoengine import MongoEngine
 
 from flask import request
@@ -14,7 +14,6 @@ from flask import render_template
 from models.models import User, Token
 from authentication.authentication import generate_token, requires_token
 from config import Config
-from werkzeug.utils import redirect
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 app.config.from_pyfile('flask-conf.cfg')
