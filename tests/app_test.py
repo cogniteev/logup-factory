@@ -1,19 +1,25 @@
-import os
-import app
 import unittest
-import tempfile
 
-class FlaskrTestCase(unittest.TestCase):
+from flask.ext.mongoengine import MongoEngine
+from models.models import User
+import no_name_app
+
+
+class FlaskAppTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
-        app.app.config['TESTING'] = True
-        self.app = app.app.test_client()
-        app.init_db()
+        no_name_app.configure_app('confs/test-conf.cfg')
+        self.app = no_name_app.app.test_client()
 
     def tearDown(self):
-        os.close(self.db_fd)
-        os.unlink(app.app.config['DATABASE'])
+        pass
+
+    def test_index(self):
+        self.app.get('/')
+
+    def test_users(self):
+        self.assertEquals(User.objects().count(), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -27,21 +27,6 @@ def generate_token(email, password):
         return None
 
 
-def refresh_token(token_id, password):
-    """ Expands a token validity date upon successful password check
-
-    @param token_id: the token's to refresh id
-    @param password: the user's password
-    @return: a refreshed token if the password matches or None
-    """
-    token = Token.find_by_id(token_id)
-    user = token.user
-    if str(bcrypt.hashpw(password.encode('utf-8'), user.passwd.encode('utf-8')),
-           'utf-8') == user.passwd:
-        return check_user_token(user)
-    else:
-        return None
-
 
 def check_user_token(user):
     """ Retrieve, update or create a user's token
@@ -57,6 +42,9 @@ def check_user_token(user):
         token = Token(user=user)
         token.save()
         return token
+
+def is_valid_token(token_id):
+    return Token.objects(id=token_id).count() > 0
 
 def requires_token(f):
 

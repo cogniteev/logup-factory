@@ -11,13 +11,17 @@ from flask import jsonify
 from flask import render_template
 
 from models.models import User, Token
-from authentication.authentication import generate_token, requires_token
+from authentication.authentication import generate_token, requires_token, \
+    is_valid_token
 from config import Config
+from werkzeug.utils import redirect
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
-app.config.from_pyfile('flask-conf.cfg')
 
-db = MongoEngine(app)
+def configure_app(config_file_path):
+    app.config.from_pyfile(config_file_path)
+    app.db = MongoEngine(app)
+    return app
 
 @app.route('/')
 def index():
@@ -50,7 +54,13 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        if 'token' in session:
+            if is_valid_token(session['token']):
+                return redirect('/app')
+            else:
+                return render_template('login.html')
+        else:
+            return render_template('login.html')
     else:
         token = generate_token(request.form['email'], request.form['password'])
         if token:
@@ -81,4 +91,5 @@ def logout():
     return jsonify(success=True)
 
 if __name__ == '__main__':
+    configure_app('confs/dev-conf.cfg')
     app.run()
