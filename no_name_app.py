@@ -8,7 +8,6 @@ from flask.ext.mongoengine import MongoEngine
 from flask import request
 from flask import session
 from flask import jsonify
-from flask import make_response
 from flask import render_template
 
 from models.models import User, Token
@@ -30,10 +29,10 @@ def signup():
         return render_template('signup.html')
     else:
         if User.objects(email=request.form['email']).count() > 0:
-            return make_response(jsonify(error='Already registered email'), 412)
+            return jsonify(error='Already registered email')
 
         elif not Config.EMAIL_REGEX.match(request.form['email']):
-            return make_response(jsonify(error='Invalid email address'), 412)
+            return jsonify(error='Invalid email address')
 
         else:
             user = User.create_and_store(
@@ -52,7 +51,7 @@ def login():
             session['token'] = str(token.id)
             return jsonify(email=token.user.email)
         else:
-            return make_response(jsonify(error='Invalid credentials'), 401)
+            return jsonify(error='Invalid credentials')
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -73,7 +72,7 @@ def password_reset(token):
 def logout():
     Token.objects(id=session['token']).delete
     session.pop('token', None)
-    return make_response(jsonify(success=True), 200)
+    return jsonify(success=True)
 
 if __name__ == '__main__':
     app.run()
