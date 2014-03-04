@@ -8,7 +8,7 @@ import no_name_app
 class FlaskAppTestCase(unittest.TestCase):
 
     def setUp(self):
-        no_name_app.configure_app('confs/test-conf.cfg')
+        no_name_app.configure_app('confs/test.cfg')
         self.app = no_name_app.app.test_client()
         print no_name_app.app.db.get_db()
 

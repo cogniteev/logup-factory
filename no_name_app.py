@@ -89,5 +89,5 @@ def logout():
     return jsonify(success=True)
 
 if __name__ == '__main__':
-    configure_app('confs/dev-conf.cfg')
+    configure_app('confs/dev.cfg')
     app.run()

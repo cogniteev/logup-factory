@@ -1,8 +1,6 @@
 # Sublime
 *.sublime-*
 
-
-
 ## Python specific
 
 # Byte-compiled / optimized / DLL files
@@ -99,3 +97,4 @@ bower_components
 ## App specific
 
 dist
+confs/prod.cfg
