@@ -18,14 +18,17 @@ from werkzeug.utils import redirect
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 
+
 def configure_app(config_file_path):
     app.config.from_pyfile(config_file_path)
     app.db = MongoEngine(app)
     return app
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/app')
 @requires_token
@@ -52,6 +55,7 @@ def signup():
             )
             return jsonify(email=user.email)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 @redirect_app
 def login():
@@ -65,6 +69,7 @@ def login():
         else:
             return jsonify(error='Invalid credentials')
 
+
 @app.route('/forgot-password', methods=['GET', 'POST'])
 @redirect_app
 def forgot_password():
@@ -72,6 +77,7 @@ def forgot_password():
         return render_template('forgot-password.html')
     else:
         return 'ok'
+
 
 @app.route('/password-reset/<token>', methods=['GET', 'POST'])
 @redirect_app
@@ -81,12 +87,14 @@ def password_reset(token):
     else:
         return 'ok'
 
+
 @app.route('/logout', methods=['GET'])
 @requires_token
 def logout():
     Token.objects(id=session['token']).delete
     session.pop('token', None)
     return jsonify(success=True)
+
 
 if __name__ == '__main__':
     configure_app('confs/dev.cfg')
