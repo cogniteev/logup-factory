@@ -23,6 +23,12 @@ db = MongoEngine(app)
 def index():
     return render_template('index.html')
 
+@app.route('/app')
+@requires_token
+def product_home():
+    return render_template('user-home.html')
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':

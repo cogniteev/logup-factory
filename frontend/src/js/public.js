@@ -28,25 +28,111 @@ requirejs([
       'submit form.password-reset': 'passwordReset',
       'click button.logout': 'logout'
     },
+    extractFormData: function(form){
+      var formData = {};
+      $(form).serializeArray().forEach(function(input){
+        formData[input.name] = input.value;
+      });
+      return formData;
+    },
     login: function(e){
       e.preventDefault();
-      console.log('login');
+      $.ajax({
+        url: '/login',
+        data: this.extractFormData(e.currentTarget),
+        method: 'POST',
+        context: this,
+        success: function(data){
+          if (data.error) {
+            //
+          } else {
+            document.location.href = '/app';
+          }
+        },
+        error: function(res){
+          var message = 'Something went wrong';
+          console.log(message);
+        }
+      });
     },
     signup: function(e){
       e.preventDefault();
-      console.log('signup');
+      $.ajax({
+        url: '/signup',
+        data: this.extractFormData(e.currentTarget),
+        method: 'POST',
+        context: this,
+        success: function(res){
+          if (res.error) {
+            // show error
+          } else {
+            document.location.href = '/login';
+          }
+        },
+        error: function(res){
+          var message = 'Something went wrong';
+          console.log(message);
+        }
+      });
     },
     forgotPassword: function(e){
       e.preventDefault();
-      console.log('forgotPassword');
+      $.ajax({
+        url: '/forgot-password',
+        data: this.extractFormData(e.currentTarget),
+        method: 'POST',
+        context: this,
+        success: function(res){
+          if (res.error) {
+            // show error
+          } else {
+            // notify user something happened
+          }
+        },
+        error: function(res){
+          var message = 'Something went wrong';
+          console.log(message);
+        }
+      });
     },
     passwordReset: function(e){
       e.preventDefault();
-      console.log('passwordReset');
+      $.ajax({
+        url: '/password-reset',
+        data: this.extractFormData(e.currentTarget),
+        method: 'POST',
+        context: this,
+        success: function(res){
+          if (res.error) {
+            // show error
+          } else {
+            // notify user something happened
+          }
+        },
+        error: function(res){
+          var message = 'Something went wrong';
+          console.log(message);
+        }
+      });
     },
     logout: function(e){
       e.preventDefault();
-      console.log('logout');
+      $.ajax({
+        url: '/logout',
+        method: 'GET',
+        context: this,
+        success: function(res){
+          if (res.error) {
+            // show error
+          } else {
+            document.location.href = '/';
+          }
+        },
+        error: function(res){
+          var message = 'Something went wrong';
+          console.log(message);
+        }
+      });
     }
   });
   return new Toolbelt();
