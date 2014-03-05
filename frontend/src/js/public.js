@@ -107,7 +107,7 @@ requirejs([
       e.preventDefault();
       if (data.email.length > 0) {
         $.ajax({
-          url: action
+          url: action,
           data: this.extractFormData(e.currentTarget),
           method: 'POST',
           context: this,
