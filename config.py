@@ -8,6 +8,10 @@ class Config:
     """
     Config class contains all but fields containing the app conf
     """
+
+    def __init__(self):
+        pass
+
     SIGNUP_REQUIRES_CONFIRMATION = False
     EMAIL_REGEX = re.compile(
         r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom

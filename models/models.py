@@ -34,8 +34,13 @@ class User(Document):
         return u
 
     def update_password(self, new_password):
+        """ Update the pass word field
+
+        @param new_password: the desired new password
+        """
         self.update(set__password=bcrypt.hashpw(new_password.encode('utf-8'),
                                                 bcrypt.gensalt()))
+
 
 class BetaRequest(Document):
     """
@@ -43,6 +48,7 @@ class BetaRequest(Document):
     """
     email = EmailField(required=True, unique=True)
     code = StringField(required=True)
+
 
 class Token(Document):
     """ The authentication token collection

@@ -4,7 +4,7 @@ Here stands the authentication mechanism
 from functools import wraps
 
 import bcrypt
-from flask import session, request, g
+from flask import session, request
 from models.models import User, Token
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
@@ -28,7 +28,6 @@ def generate_token(email, password):
         return None
 
 
-
 def check_user_token(user):
     """ Retrieve, update or create a user's token
 
@@ -44,24 +43,55 @@ def check_user_token(user):
         token.save()
         return token
 
+
 def is_valid_token(token_id):
+    """ Check the existence of a token into mongoDB
+
+    @param token_id: the token's to test id
+    @return: whether the token is valid (exists) or not
+    """
     return Token.objects(id=token_id).count() > 0
 
+
 def redirect_app(f):
+    """ Wrapper allowing to redirect an authenticated user to the app page
+
+    @param f: the function to wrap
+    @return: a redirection if authenticated or the given function result
+    """
+
     @wraps(f)
     def decorated(*args, **kwargs):
+        """ The wraps decorator
 
-        if request.method == 'GET' and \
-                        'token' in session and is_valid_token(session['token']):
+        @param args: initial f's args
+        @param kwargs: initial f's kwargs
+        @return: a redirection if authenticated or f
+        """
+        if request.method == 'GET' and 'token' in session and is_valid_token(
+                session['token']):
             return redirect('/app')
         else:
             return f(*args, **kwargs)
 
     return decorated
 
+
 def requires_token(f):
+    """ Wrapper allowing to filter calls only for token authenticated users
+
+    @param f: the function to wrap
+    @return: a unauthorized answer or the given function result
+    """
+
     @wraps(f)
     def decorated(*args, **kwargs):
+        """ The wraps decorator
+
+        @param args: initial f's args
+        @param kwargs: initial f's kwargs
+        @return: an abortion if unauthorized or f
+        """
         if 'token' in session:
             t = Token.objects(id=session['token'])
             return f(*args, **kwargs) if t.count > 0 else abort(401)
