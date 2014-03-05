@@ -41,11 +41,13 @@ requirejs([
       return data;
     },
     login: function(e){
-      var data = this.extractFormData(e.currentTarget);
+      var data = this.extractFormData(e.currentTarget)
+        , action = $(e.currentTarget).attr('action');
+
       e.preventDefault();
       if (data.email.length > 0 && data.password.length > 0) {
         $.ajax({
-          url: '/login',
+          url: action,
           data: data,
           method: 'POST',
           context: this,
@@ -69,11 +71,13 @@ requirejs([
       }
     },
     signup: function(e){
-      var data = this.extractFormData(e.currentTarget);
+      var data = this.extractFormData(e.currentTarget)
+        , action = $(e.currentTarget).attr('action');
+
       e.preventDefault();
       if (data.email.length > 0 && data.password.length > 0) {
         $.ajax({
-          url: '/signup',
+          url: action,
           data: data,
           method: 'POST',
           context: this,
@@ -97,11 +101,13 @@ requirejs([
       }
     },
     forgotPassword: function(e){
-      var data = this.extractFormData(e.currentTarget);
+      var data = this.extractFormData(e.currentTarget)
+        , action = $(e.currentTarget).attr('action');
+
       e.preventDefault();
       if (data.email.length > 0) {
         $.ajax({
-          url: '/forgot-password',
+          url: action
           data: this.extractFormData(e.currentTarget),
           method: 'POST',
           context: this,
@@ -127,6 +133,7 @@ requirejs([
     passwordReset: function(e){
       var data = this.extractFormData(e.currentTarget)
         , action = $(e.currentTarget).attr('action');
+
       e.preventDefault();
       if (data.password.length > 0) {
         $.ajax({
@@ -174,11 +181,13 @@ requirejs([
       });
     },
     requestBetaAccess: function(e){
-      var data = this.extractFormData(e.currentTarget);
+      var data = this.extractFormData(e.currentTarget)
+        , action = $(e.currentTarget).attr('action');
+
       e.preventDefault();
       if (data.email.length > 0) {
         $.ajax({
-          url: '/request-beta-access',
+          url: action,
           data: data,
           method: 'POST',
           context: this,
