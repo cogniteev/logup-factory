@@ -11,6 +11,7 @@ from flask import session
 from flask import jsonify
 from flask import render_template
 from flask import url_for
+from flask import g
 
 from models.models import User, Token, PasswordRenewToken
 from authentication.authentication import generate_token
@@ -21,11 +22,20 @@ from werkzeug.utils import redirect
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 
-
 def configure_app(config_file_path):
     app.config.from_pyfile(config_file_path)
     app.db = MongoEngine(app)
     return app
+
+
+def before_request(f):
+    t = Token.objects(id=session['token'])
+    u = t.first()
+    if u:
+        g.current_user = { 'email': u.user.email }
+    else:
+        g.current_user = None
+    return f
 
 
 @app.route('/')
@@ -96,8 +106,6 @@ def forgot_password():
             return jsonify(error='Unknown email')
 
 
-
-
 @app.route('/password-reset/<token>', methods=['GET', 'POST'])
 @redirect_app
 def password_reset(token):
@@ -122,4 +130,4 @@ def request_beta_access():
 
 if __name__ == '__main__':
     configure_app('confs/dev.cfg')
-    app.run()
+    app.run(threaded=True)

@@ -15,7 +15,12 @@ module.exports = function(grunt){
       compile: {
         options: {
           paths: [ '<%= buildConfig.src %>/styl' ],
-          use: [ require('nib'), require('stylus-brandcolors'), require('stylus-mrmrscolors') ]
+          use: [
+            require('nib'),
+            require('stylus-brandcolors'),
+            require('stylus-mrmrscolors')
+          ],
+          'include css': true
         },
         files: {
           '<%= buildConfig.dist %>/css/index.css': '<%= buildConfig.src %>/styl/index.styl'
@@ -60,7 +65,8 @@ module.exports = function(grunt){
     clean: {
       dist: [
         '<%= buildConfig.dist %>/css',
-        '<%= buildConfig.dist %>/js'
+        '<%= buildConfig.dist %>/js',
+        '<%= buildConfig.dist %>/fonts',
       ]
     },
     watch: {

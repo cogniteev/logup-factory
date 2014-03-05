@@ -4,6 +4,7 @@
   {% block head %}
   <title>{% block title %}{% endblock %} | App</title>
   {% endblock %}
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700">
   <link rel="stylesheet" href="/css/index.css">
   <script data-main="/js/public" src="/js/lib/require.js"></script>
 </head>
@@ -11,12 +12,14 @@
 
   <nav>
     <a href="/">index</a>
-    <a href="/login">login</a>
-    <a href="/signup">signup</a>
-    <a href="/forgot-password">forgot password</a>
-    <a href="/password-reset">password reset</a>
+    {% if g.current_user %}
+    {{ g.current_user.email }}
     <a href="/logout" class="logout">logout</a>
     <a href="/app">app</a>
+    {% else %}
+    <a href="/login">login</a>
+    <a href="/signup">signup</a>
+    {% endif %}
   </nav>
 
   <main>

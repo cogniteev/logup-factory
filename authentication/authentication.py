@@ -60,14 +60,10 @@ def redirect_app(f):
     return decorated
 
 def requires_token(f):
-
-
     @wraps(f)
     def decorated(*args, **kwargs):
-
         if 'token' in session:
             t = Token.objects(id=session['token'])
-            g.current_user = {'email': t.user.email}
             return f(*args, **kwargs) if t.count > 0 else abort(401)
         else:
             return abort(401)
