@@ -4,16 +4,22 @@
 
 {% block content %}
 
-<h2>Log In</h2>
+<div class="centered">
+  <div>
 
-<form action="/login" method="post" class="login pure-form">
-  <input type="text" name="email" placeholder="your@email.com">
-  <input type="password" name="password" placeholder="your_password">
-  <button type="submit" class="pure-button">Log In</button>
-</form>
+    <h2>Log In</h2>
 
-<p>
-  <a href="/forgot-password">forgot password</a>
-</p>
+    <form action="/login" method="post" class="login pure-form">
+      <input type="text" name="email" placeholder="your@email.com">
+      <input type="password" name="password" placeholder="your_password">
+      <button type="submit" class="pure-button">Log In</button>
+    </form>
+
+    <div class="sub">
+      <a href="/forgot-password">forgot password</a>
+    </div>
+
+  </div>
+</div>
 
 {% endblock content %}

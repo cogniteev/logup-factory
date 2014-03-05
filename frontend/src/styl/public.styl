@@ -1,0 +1,47 @@
+@import 'nib'
+@import 'mrmrscolors'
+@import 'brandcolors'
+
+maxWidth = 1200px
+
+*
+  box-sizing border-box
+
+body
+  display flex
+  flex-direction column
+
+nav
+  padding 1rem
+  >*
+    margin 0 auto
+    max-width maxWidth
+
+main
+  display flex
+  flex 1
+
+main
+  >div.centered
+    align-items center
+    display flex
+    flex 1
+    flex-direction column
+    justify-content center
+    >div
+      max-width 400px
+      width 90%
+      form
+        display flex
+        flex-direction column
+        >*
+          margin-top 10px
+          &:first-child
+            margin-top 0
+      .sub
+        margin-top 10px
+        text-align center
+
+footer
+  padding 1rem
+  text-align center

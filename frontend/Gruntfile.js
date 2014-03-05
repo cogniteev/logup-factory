@@ -23,7 +23,9 @@ module.exports = function(grunt){
           'include css': true
         },
         files: {
-          '<%= buildConfig.dist %>/css/index.css': '<%= buildConfig.src %>/styl/index.styl'
+          '<%= buildConfig.dist %>/css/common.css': '<%= buildConfig.src %>/styl/common.styl',
+          '<%= buildConfig.dist %>/css/public.css': '<%= buildConfig.src %>/styl/public.styl',
+          '<%= buildConfig.dist %>/css/app.css': '<%= buildConfig.src %>/styl/app.styl'
         }
       }
     },

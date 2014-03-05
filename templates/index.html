@@ -4,14 +4,17 @@
 
 {% block content %}
 
-Index
 
-<h2>Beta Access</h2>
+<div>
 
-<form action="/beta-access" method="post" class="beta-access pure-form">
-  <input type="text" name="email" placeholder="your@email.com">
-  <input type="text" name="promo_code" placeholder="promotional code">
-  <button type="submit" class="pure-button">Require Beta Access</button>
-</form>
+  <h2>Beta Access</h2>
+
+  <form action="/request-beta-access" method="post" class="beta-access pure-form">
+    <input type="text" name="email" placeholder="your@email.com">
+    <input type="text" name="promo_code" placeholder="promotional code">
+    <button type="submit" class="pure-button">Require Beta Access</button>
+  </form>
+
+</div>
 
 {% endblock content %}
