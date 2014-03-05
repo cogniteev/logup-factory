@@ -125,11 +125,12 @@ requirejs([
       }
     },
     passwordReset: function(e){
-      var data = this.extractFormData(e.currentTarget);
+      var data = this.extractFormData(e.currentTarget)
+        , action = $(e.currentTarget).attr('action');
       e.preventDefault();
       if (data.password.length > 0) {
         $.ajax({
-          url: '/password-reset',
+          url: action,
           data: this.extractFormData(e.currentTarget),
           method: 'POST',
           context: this,
