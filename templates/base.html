@@ -11,25 +11,28 @@
 </head>
 <body>
 
-  <nav>
-    <a href="/">index</a>
-    {% if g.current_user %}
-    {{ g.current_user.email }}
-    <a href="/logout" class="logout">logout</a>
-    <a href="/app">app</a>
-    {% else %}
-    <a href="/login">login</a>
-    <a href="/signup">signup</a>
-    {% endif %}
-  </nav>
+  <div class="container">
 
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+    <nav>
+      <a href="/">index</a>
+      {% if g.current_user %}
+      {{ g.current_user.email }}
+      <a href="/logout" class="logout">logout</a>
+      <a href="/app">app</a>
+      {% else %}
+      <a href="/login">login</a>
+      <a href="/signup">signup</a>
+      {% endif %}
+    </nav>
 
-  <footer>
-    &copy; 2014
-  </footer>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
 
+    <footer>
+      &copy; 2014
+    </footer>
+
+  </div>
 </body>
 </html>

@@ -7,9 +7,10 @@ maxWidth = 1200px
 *
   box-sizing border-box
 
-body
+.container
   display flex
   flex-direction column
+  min-height 100%
 
 nav
   padding 1rem
@@ -20,8 +21,7 @@ nav
 main
   display flex
   flex 1
-
-main
+  flex-direction column
   >div.centered
     align-items center
     display flex
@@ -31,9 +31,13 @@ main
     >div
       max-width 400px
       width 90%
+      .form-title
+        margin 0
+        text-align center
       form
         display flex
         flex-direction column
+        margin-top 10px
         >*
           margin-top 10px
           &:first-child
@@ -43,5 +47,5 @@ main
         text-align center
 
 footer
-  padding 1rem
+  padding 10px
   text-align center
