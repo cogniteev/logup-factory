@@ -151,8 +151,16 @@ def logout():
 
 @app.route('/request-beta-access', methods=['POST'])
 def request_beta_access():
-    print request.form
-    return 'ok'
+    email = request.form['email']
+    if not Config.EMAIL_REGEX.match(email):
+        return jsonify(error='Invalid email address')
+    if User.objects(email=email).count() == 0 and BetaRequest.objects(
+            email=email).count() == 0:
+        BetaRequest(email=email, code=request.form['promo_code']).save()
+        return jsonify(success=True)
+    else:
+        return jsonify(error='Already registered')
+
 
 if __name__ == '__main__':
     configure_app('confs/prod.cfg')
