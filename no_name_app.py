@@ -112,7 +112,12 @@ def forgot_password():
             answer = send_password_reset(app.mailgun_client,
                                          app.config['MAILGUN_MAILING_ADDRESS'],
                                          user.email,
-                                         reset_link)
+                                         render_template(
+                                             'email/forgot-password.txt',
+                                             link=reset_link),
+                                         render_template(
+                                             'email/forgot-password.html',
+                                             link=reset_link))
             if answer.status_code == 200:
                 return jsonify(success=True)
             else:
@@ -144,7 +149,7 @@ def password_reset(token):
 @app.route('/logout', methods=['GET'])
 @requires_token
 def logout():
-    Token.objects(id=session['token']).delete
+    Token.objects(id=session['token']).delete()
     session.pop('token', None)
     return jsonify(success=True)
 
