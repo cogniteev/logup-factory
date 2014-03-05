@@ -160,31 +160,31 @@ def forgot_password():
         abort(404)
 
     users = User.objects(email=request.form['email'])
-    if users.count() > 0:
-        user = users.first()
-        if PasswordRenewToken.objects(user=user).count() > 0:
-            renew_token = PasswordRenewToken.objects(user=user).first()
-            hashed = b64encode(str(renew_token.id))
-        else:
-            renew_token = PasswordRenewToken(user=user)
-            renew_token.save()
-            hashed = b64encode(str(renew_token.id))
-        reset_link = url_for('password_reset', token=hashed, _external=True)
-
-        answer = send_password_reset(
-            app.mailgun_client,
-            app.config['MAILGUN_MAILING_ADDRESS'],
-            user.email,
-            render_template('email/forgot-password.txt', link=reset_link),
-            render_template('email/forgot-password.html', link=reset_link))
-
-        if answer.status_code == 200:
-            return jsonify(success=True)
-        else:
-            return jsonify(error='Unable to sent mail')
-
-    else:
+    if users.count() == 0:
         return jsonify(error='Unknown email')
+    user = users.first()
+    if PasswordRenewToken.objects(user=user).count() > 0:
+        renew_token = PasswordRenewToken.objects(user=user).first()
+        hashed = b64encode(str(renew_token.id))
+    else:
+        renew_token = PasswordRenewToken(user=user)
+        renew_token.save()
+        hashed = b64encode(str(renew_token.id))
+    reset_link = url_for('password_reset', token=hashed, _external=True)
+
+    answer = send_password_reset(
+        app.mailgun_client,
+        app.config['MAILGUN_MAILING_ADDRESS'],
+        user.email,
+        render_template('email/forgot-password.txt', link=reset_link),
+        render_template('email/forgot-password.html', link=reset_link)
+    )
+
+    if answer.status_code == 200:
+        return jsonify(success=True)
+    else:
+        return jsonify(error='Unable to sent mail')
+
 
 
 @app.route('/password-reset/<token>', methods=['GET'])
@@ -213,12 +213,11 @@ def password_reset(token):
         return jsonify(error='Invalid reset request')
 
     p_token = PasswordRenewToken.objects(id=clear)
-    if p_token.count() > 0:
-        p_token.first().user.update_password(request.form['password'])
-        p_token.delete()
-        return jsonify(success=True)
-    else:
+    if p_token.count() == 0:
         return jsonify(error='Invalid reset request')
+    p_token.first().user.update_password(request.form['password'])
+    p_token.delete()
+    return jsonify(success=True)
 
 
 @app.route('/logout', methods=['GET'])
@@ -246,6 +245,7 @@ def request_beta_access():
     email = request.form['email']
     if not Config.EMAIL_REGEX.match(email):
         return jsonify(error='Invalid email address')
+
     if User.objects(email=email).count() == 0 and BetaRequest.objects(
             email=email).count() == 0:
         BetaRequest(email=email, code=request.form['promo_code']).save()
