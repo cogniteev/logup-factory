@@ -4,7 +4,7 @@ Here stands the authentication mechanism
 from functools import wraps
 
 import bcrypt
-from flask import session, request
+from flask import session, request, g
 from models.models import User, Token
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
@@ -67,6 +67,7 @@ def requires_token(f):
 
         if 'token' in session:
             t = Token.objects(id=session['token'])
+            g.current_user = {'email': t.user.email}
             return f(*args, **kwargs) if t.count > 0 else abort(401)
         else:
             return abort(401)

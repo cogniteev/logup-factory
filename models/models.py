@@ -39,3 +39,10 @@ class Token(Document):
     """
     user = ReferenceField(User, required=True, unique=True,
                           reverse_delete_rule=CASCADE)
+
+
+class PasswordRenewToken(Document):
+    """ The password token collection
+    """
+    user = ReferenceField(User, required=True, unique=True,
+                          reverse_delete_rule=CASCADE)

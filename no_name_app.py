@@ -1,6 +1,7 @@
 """
 Main entry point of the logup-factory
 """
+from base64 import b64encode
 
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
@@ -9,10 +10,12 @@ from flask import request
 from flask import session
 from flask import jsonify
 from flask import render_template
+from flask import url_for
 
-from models.models import User, Token
-from authentication.authentication import generate_token, requires_token, \
-    redirect_app
+from models.models import User, Token, PasswordRenewToken
+from authentication.authentication import generate_token
+from authentication.authentication import requires_token
+from authentication.authentication import redirect_app
 from config import Config
 from werkzeug.utils import redirect
 
@@ -76,7 +79,23 @@ def forgot_password():
     if request.method == 'GET':
         return render_template('forgot-password.html')
     else:
-        return 'ok'
+        users = User.objects(email=request.form['email'])
+        if users.count() > 0:
+            user = users.first()
+            if PasswordRenewToken.objects(user=user).count() > 0:
+                renew_token = PasswordRenewToken.objects(user=user).first()
+                hashed = b64encode(str(renew_token.id))
+            else:
+                renew_token = PasswordRenewToken(user=user)
+                renew_token.save()
+                hashed = b64encode(str(renew_token.id))
+            # TODO send email
+            print url_for('password_reset', token=hashed, _external=True)
+            return jsonify(success='True')
+        else:
+            return jsonify(error='Unknown email')
+
+
 
 
 @app.route('/password-reset/<token>', methods=['GET', 'POST'])
