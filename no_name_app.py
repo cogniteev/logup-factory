@@ -13,7 +13,7 @@ from flask import render_template
 from flask import url_for
 from flask import g
 
-from models.models import User, Token, PasswordRenewToken
+from models.models import User, Token, PasswordRenewToken, BetaRequest
 from authentication.authentication import generate_token
 from authentication.authentication import requires_token
 from authentication.authentication import redirect_app
@@ -27,12 +27,14 @@ from werkzeug.utils import redirect
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 
+
 def configure_app(config_file_path):
     app.config.from_pyfile(config_file_path)
     app.db = MongoEngine(app)
     app.mailgun_client = Client(app.config['MAILGUN_API_KEY'],
                                 app.config['MAILGUN_DOMAIN'])
     return app
+
 
 @app.before_request
 def before_request():
@@ -149,9 +151,9 @@ def logout():
 
 @app.route('/request-beta-access', methods=['POST'])
 def request_beta_access():
-    # email, promo_code
+    print request.form
     return 'ok'
 
 if __name__ == '__main__':
-    configure_app('confs/dev.cfg')
+    configure_app('confs/prod.cfg')
     app.run(threaded=True)

@@ -37,6 +37,12 @@ class User(Document):
         self.update(set__password=bcrypt.hashpw(new_password.encode('utf-8'),
                                                 bcrypt.gensalt()))
 
+class BetaRequest(Document):
+    """
+    Collection of beta request email
+    """
+    email = EmailField(required=True, unique=True)
+    code = StringField(required=True)
 
 class Token(Document):
     """ The authentication token collection
