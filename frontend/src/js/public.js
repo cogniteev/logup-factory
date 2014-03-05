@@ -74,7 +74,7 @@ requirejs([
       if (data.email.length > 0 && data.password.length > 0) {
         $.ajax({
           url: '/signup',
-          data: this.extractFormData(e.currentTarget),
+          data: data,
           method: 'POST',
           context: this,
           success: function(res){
@@ -179,6 +179,7 @@ requirejs([
       if (data.email.length > 0) {
         $.ajax({
           url: '/request-beta-access',
+          data: data,
           method: 'POST',
           context: this,
           success: function(res){
