@@ -27,94 +27,131 @@ requirejs([
       'submit form.forgot-password': 'forgotPassword',
       'submit form.password-reset': 'passwordReset',
       'submit form.beta-access': 'requestBetaAccess',
-      'click button.logout': 'logout'
+      'click a.logout': 'logout'
     },
     extractFormData: function(form){
-      var formData = {};
+      var data = {};
       $(form).serializeArray().forEach(function(input){
-        formData[input.name] = input.value;
+        if (input.name === 'email') {
+          data[input.name] = input.value.trim();
+        } else {
+          data[input.name] = input.value;
+        }
       });
-      return formData;
+      return data;
     },
     login: function(e){
+      var data = this.extractFormData(e.currentTarget);
       e.preventDefault();
-      $.ajax({
-        url: '/login',
-        data: this.extractFormData(e.currentTarget),
-        method: 'POST',
-        context: this,
-        success: function(data){
-          if (data.error) {
-            //
-          } else {
-            document.location.href = '/app';
+      if (data.email.length > 0 && data.password.length > 0) {
+        $.ajax({
+          url: '/login',
+          data: data,
+          method: 'POST',
+          context: this,
+          success: function(res){
+            var $el = $(e.currentTarget);
+            if (res.error) {
+              if ($el.find('.error').length === 0) {
+                $el.prepend('<p class="error">' + res.error + '</p>');
+              } else {
+                $el.find('.error').html(res.error);
+              }
+            } else {
+              document.location.href = '/app';
+            }
+          },
+          error: function(res){
+            var message = 'Something went wrong';
+            console.log(message);
           }
-        },
-        error: function(res){
-          var message = 'Something went wrong';
-          console.log(message);
-        }
-      });
+        });
+      }
     },
     signup: function(e){
+      var data = this.extractFormData(e.currentTarget);
       e.preventDefault();
-      $.ajax({
-        url: '/signup',
-        data: this.extractFormData(e.currentTarget),
-        method: 'POST',
-        context: this,
-        success: function(res){
-          if (res.error) {
-            // show error
-          } else {
-            document.location.href = '/login';
+      if (data.email.length > 0 && data.password.length > 0) {
+        $.ajax({
+          url: '/signup',
+          data: this.extractFormData(e.currentTarget),
+          method: 'POST',
+          context: this,
+          success: function(res){
+            var $el = $(e.currentTarget);
+            if (res.error) {
+              if ($el.find('.error').length === 0) {
+                $el.prepend('<p class="error">' + res.error + '</p>');
+              } else {
+                $el.find('.error').html(res.error);
+              }
+            } else {
+              document.location.href = '/login';
+            }
+          },
+          error: function(res){
+            var message = 'Something went wrong';
+            console.log(message);
           }
-        },
-        error: function(res){
-          var message = 'Something went wrong';
-          console.log(message);
-        }
-      });
+        });
+      }
     },
     forgotPassword: function(e){
+      var data = this.extractFormData(e.currentTarget);
       e.preventDefault();
-      $.ajax({
-        url: '/forgot-password',
-        data: this.extractFormData(e.currentTarget),
-        method: 'POST',
-        context: this,
-        success: function(res){
-          if (res.error) {
-            // show error
-          } else {
-            // notify user something happened
+      if (data.email.length > 0) {
+        $.ajax({
+          url: '/forgot-password',
+          data: this.extractFormData(e.currentTarget),
+          method: 'POST',
+          context: this,
+          success: function(res){
+            var $el = $(e.currentTarget);
+            if (res.error) {
+              if ($el.find('.error').length === 0) {
+                $el.prepend('<p class="error">' + res.error + '</p>');
+              } else {
+                $el.find('.error').html(res.error);
+              }
+            } else {
+              $(e.currentTarget).html('form processed, check your emails');
+            }
+          },
+          error: function(res){
+            var message = 'Something went wrong';
+            console.log(message);
           }
-        },
-        error: function(res){
-          var message = 'Something went wrong';
-          console.log(message);
-        }
-      });
+        });
+      }
     },
     passwordReset: function(e){
+      var data = this.extractFormData(e.currentTarget);
       e.preventDefault();
-      $.ajax({
-        url: '/password-reset',
-        data: this.extractFormData(e.currentTarget),
-        method: 'POST',
-        context: this,
-        success: function(res){
-          if (res.error) {
-            // show error
-          } else {
-            // notify user something happened
+      if (data.password.length > 0) {
+        $.ajax({
+          url: '/password-reset',
+          data: this.extractFormData(e.currentTarget),
+          method: 'POST',
+          context: this,
+          success: function(res){
+            var $el = $(e.currentTarget);
+            if (res.error) {
+              if ($el.find('.error').length === 0) {
+                $el.prepend('<p class="error">' + res.error + '</p>');
+              } else {
+                $el.find('.error').html(res.error);
+              }
+            } else {
+              $(e.currentTarget).html('password was reset, redirecting to /login');
+              setTimeout(function(){ document.location.href = '/login'; }, 3000);
+            }
+          },
+          error: function(res){
+            var message = 'Something went wrong';
+            console.log(message);
           }
-        },
-        error: function(res){
-          var message = 'Something went wrong';
-          console.log(message);
-        }
-      });
+        });
+      }
     },
     logout: function(e){
       e.preventDefault();
@@ -136,23 +173,31 @@ requirejs([
       });
     },
     requestBetaAccess: function(e){
+      var data = this.extractFormData(e.currentTarget);
       e.preventDefault();
-      $.ajax({
-        url: '/request-beta-access',
-        method: 'POST',
-        context: this,
-        success: function(res){
-          if (res.error) {
-            // show error
-          } else {
-            // notify user something happened
+      if (data.email.length > 0) {
+        $.ajax({
+          url: '/request-beta-access',
+          method: 'POST',
+          context: this,
+          success: function(res){
+            var $el = $(e.currentTarget);
+            if (res.error) {
+              if ($el.find('.error').length === 0) {
+                $el.prepend('<p class="error">' + res.error + '</p>');
+              } else {
+                $el.find('.error').html(res.error);
+              }
+            } else {
+              $(e.currentTarget).html('successfully registered to beta access');
+            }
+          },
+          error: function(res){
+            var message = 'Something went wrong';
+            console.log(message);
           }
-        },
-        error: function(res){
-          var message = 'Something went wrong';
-          console.log(message);
-        }
-      });
+        });
+      }
     }
   });
   return new Toolbelt();
