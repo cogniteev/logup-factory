@@ -1,7 +1,7 @@
 """
 Main entry point of the logup-factory
 """
-from base64 import b64encode
+from base64 import b64encode, b64decode
 
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
@@ -17,6 +17,11 @@ from models.models import User, Token, PasswordRenewToken
 from authentication.authentication import generate_token
 from authentication.authentication import requires_token
 from authentication.authentication import redirect_app
+
+from utils.mailgun_helper import send_password_reset
+
+from python_mailgun.client import Client
+
 from config import Config
 from werkzeug.utils import redirect
 
@@ -25,6 +30,8 @@ app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 def configure_app(config_file_path):
     app.config.from_pyfile(config_file_path)
     app.db = MongoEngine(app)
+    app.mailgun_client = Client(app.config['MAILGUN_API_KEY'],
+                                app.config['MAILGUN_DOMAIN'])
     return app
 
 @app.before_request
@@ -33,7 +40,7 @@ def before_request():
         t = Token.objects(id=session['token'])
         u = t.first()
         if u:
-            g.current_user = { 'email': u.user.email }
+            g.current_user = {'email': u.user.email}
         else:
             g.current_user = None
 
@@ -99,9 +106,15 @@ def forgot_password():
                 renew_token = PasswordRenewToken(user=user)
                 renew_token.save()
                 hashed = b64encode(str(renew_token.id))
-            # TODO send email
-            print url_for('password_reset', token=hashed, _external=True)
-            return jsonify(success='True')
+            reset_link = url_for('password_reset', token=hashed, _external=True)
+            answer = send_password_reset(app.mailgun_client,
+                                         app.config['MAILGUN_MAILING_ADDRESS'],
+                                         user.email,
+                                         reset_link)
+            if answer.status_code == 200:
+                return jsonify(success=True)
+            else:
+                return jsonify(error='Unable to sent mail')
         else:
             return jsonify(error='Unknown email')
 
@@ -112,7 +125,18 @@ def password_reset(token):
     if request.method == 'GET':
         return render_template('password-reset.html', token=token)
     else:
-        return 'ok'
+        try:
+            clear = b64decode(token)
+        except TypeError:
+            return jsonify(error='Invalid reset request')
+
+        p_token = PasswordRenewToken.objects(id=clear)
+        if p_token.count() > 0:
+            p_token.first().user.update_password(request.form['password'])
+            p_token.delete()
+            return jsonify(success=True)
+        else:
+            return jsonify(error='Invalid reset request')
 
 
 @app.route('/logout', methods=['GET'])

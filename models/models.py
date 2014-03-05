@@ -33,6 +33,10 @@ class User(Document):
         u.save()
         return u
 
+    def update_password(self, new_password):
+        self.update(set__password=bcrypt.hashpw(new_password.encode('utf-8'),
+                                                bcrypt.gensalt()))
+
 
 class Token(Document):
     """ The authentication token collection
