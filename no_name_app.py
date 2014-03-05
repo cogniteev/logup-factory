@@ -27,15 +27,15 @@ def configure_app(config_file_path):
     app.db = MongoEngine(app)
     return app
 
-
-def before_request(f):
-    t = Token.objects(id=session['token'])
-    u = t.first()
-    if u:
-        g.current_user = { 'email': u.user.email }
-    else:
-        g.current_user = None
-    return f
+@app.before_request
+def before_request():
+    if 'token' in session:
+        t = Token.objects(id=session['token'])
+        u = t.first()
+        if u:
+            g.current_user = { 'email': u.user.email }
+        else:
+            g.current_user = None
 
 
 @app.route('/')
