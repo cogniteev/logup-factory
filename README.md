@@ -39,7 +39,7 @@ Then, from the app directory:
 
 ```bash
 $ pip install -r requirements.txt
-$ python no_name_app.py
+$ python webapp.py
 ```
 
 Application will be running on [localhost](http://localhost:5000).
