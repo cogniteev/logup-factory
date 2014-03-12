@@ -22,14 +22,12 @@ from werkzeug.exceptions import abort
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/dist')
 
-
-def configure_app(config_file_path):
+def configure_app():
     """ Function to be called for flask's configuration
 
-    @param config_file_path: the configuration's file path
     @return: the configured app
     """
-    app.config.from_pyfile(config_file_path)
+    app.config.from_envvar(Config.APP_ENVVAR)
     app.db = MongoEngine(app)
     app.mailgun_client = None
     if 'MAILGUN_API_KEY' and 'MAILGUN_DOMAIN' in app.config:
@@ -254,6 +252,7 @@ def request_beta_access():
         return jsonify(error='Already registered')
 
 
+configure_app()
 if __name__ == '__main__':
-    configure_app('confs/prod.cfg')
+    # configure_app('confs/prod.cfg')
     app.run(threaded=True)

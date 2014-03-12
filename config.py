@@ -12,6 +12,7 @@ class Config:
     def __init__(self):
         pass
 
+    APP_ENVVAR = 'WEBAPP_SETTINGS'
     SIGNUP_REQUIRES_CONFIRMATION = False
     EMAIL_REGEX = re.compile(
         r"(^[-!#$%&'*+/=?^_`{}|~0-9A-Z]+(\.[-!#$%&'*+/=?^_`{}|~0-9A-Z]+)*"  # dot-atom
