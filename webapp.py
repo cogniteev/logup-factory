@@ -254,5 +254,4 @@ def request_beta_access():
 
 configure_app()
 if __name__ == '__main__':
-    # configure_app('confs/prod.cfg')
     app.run(threaded=True)
