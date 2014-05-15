@@ -181,7 +181,7 @@ def forgot_password():
     if answer.status_code == 200:
         return jsonify(success=True)
     else:
-        return jsonify(error='Unable to sent mail')
+        return jsonify(error='Unable to send mail')
 
 
 
